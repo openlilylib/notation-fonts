@@ -1,8 +1,8 @@
-Stylesheets
+openLilyLib/notation-fonts
 ===========
 
-A library to manage font selection and stylesheets with the [GNU LilyPond](http://lilypond.org) music typesetter.
-This library is part of [openLilyLib](https://github.com/openlilylib/openlilylib) and maintained by
+A package to manage font selection with the [GNU LilyPond](http://lilypond.org) music typesetter.
+This repository is part of [openLilyLib](https://github.com/openlilylib/openlilylib) and maintained by
 
 - Urs Liska (ul@openlilylib.org)
 - Kieren MacMillan (kieren_macmillan@sympatico.ca)
@@ -10,11 +10,14 @@ This library is part of [openLilyLib](https://github.com/openlilylib/openlilylib
 
 ---
 
-Initially only loading of alternative fonts for LilyPond is implemented, but this is already a great enhancement.
-On http://fonts.openlilylib.org a comprehensive range of alternative notation fonts is available for download. 
-If you have installed `openLilyLib` you can ignore the documentation with regard to the *usage* of the fonts,
-once you have downloaded and installed them. Very soon a Python script will available as part of this library
-that will make the process of downloading, updating and "installing" the fonts a nearly automatic process too.
+This package builds on the possibility to choose alternative notation fonts that has been added to GNU LilyPond 
+with version 2.19.12. Basically the package provides a convenience layer to
+
+* easily load a notation font
+* automatically load a default stylesheet together with the font
+* optionally load an extension stylesheet to access specific features of a font.
+
+**Note:** The fonts are *not* included in this package.
 
 Using Alternative Fonts
 -----------------------
@@ -24,8 +27,10 @@ The easiest way to use an alternative notation font in LilyPond is:
 ```lilypond
 \version "2.19.12"
 
-\include "openlilylib"
-\loadModule "stylesheets"
+% load openLilyLib
+\include "oll-core/package.ily"
+% load this package
+\loadPackage notation-fonts
 \useNotationFont Cadence
 ```
 
@@ -34,7 +39,7 @@ Font names are case insensitive (so other than with the manual activation you do
 write `cadence` here, and note that when the font name doesn't contain "illegal" characters
 (which currently only is the case with `Gutenberg1939`) you don't need quotation marks.
 
-The "simple" form of `\useNotationFont` uses the same name for notation and brace fonts and loads
+The “simple” form of `\useNotationFont` uses the same name for notation and brace fonts and loads
 a default stylesheet that accompanies each font, adjusting LilyPond's engraving settings (e.g.
 line thicknesses) to match the appearance of the font. However, you have more fine-grained control
 by using the following form:
