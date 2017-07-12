@@ -40,22 +40,13 @@
 #(define (make-style-file name style)
    "Construct file name for included style sheet.
     Factored out because needed several times."
-   (string-append
-    #{ \getOption global.root-path #}
-    "/stylesheets/fonts/"
-    (string-downcase name)
-    "-"
-    (string-downcase style)
-    ".ily"))
+   (os-path-join-unix
+    (append openlilylib-root '(notation-fonts fonts)
+      (list
+       (string->symbol
+        (string-downcase
+         (format "~a-~a.ily" name style)))))))
 
-% A string that is used to warn users who run an older
-% LilyPond version.
-#(define fonts-lily-version-warning "
-Loading alternative fonts requires LilyPond >= 2.19.12 or
-a patched version of LilyPond 2.18. You are running LilyPond ~a.
-If you receive an error message below please either upgrade to
-a current LilyPond version or install the patch as described on
-http://fonts.openlilylib.org.\n")
 
 %%%% activate font extensions
 % The Arnold font provides a number of extra glyphs, others may follow.
@@ -63,16 +54,17 @@ http://fonts.openlilylib.org.\n")
 % and articulations to make use of these extra glyphs.
 % Don't call the function explicitly but set the 'extensions' option to ##t
 % in the call of \useNotationFont.
-#(define (use-font-extensions parser location name)
+#(define (use-font-extensions name)
    (let ((filename (make-style-file name "extensions")))
+     (ly:message "Extension file: ~a" filename)
      (if (file-exists? filename)
          (if (lilypond-greater-than? "2.19.21")
-         (ly:parser-include-string
-           (ly:gulp-file filename))
-         (ly:parser-include-string parser
-           (ly:gulp-file filename)))
-         (oll:warn location
-           (format "No extensions available for font \"~a\". Skipping." name))
+             (ly:parser-include-string
+              (ly:gulp-file filename))
+             (ly:parser-include-string parser
+               (ly:gulp-file filename)))
+         (oll:warn 
+           "No extensions available for font \"~a\". Skipping." name)
          )))
 
 % Use a notation font with or without options.
@@ -106,11 +98,8 @@ http://fonts.openlilylib.org.\n")
 % but errors due to "font not found" are avoided.
 
 useNotationFont =
-#(define-void-function (parser location options name)
+#(define-void-function (options name)
    ((ly:context-mod?) string?)
-   (if (lilypond-less-than? "2.19.12")
-       (oll:warn location (format fonts-lily-version-warning
-                            (lilypond-version))))
    (let ((use-name (string-downcase name)))
      (if
       (not (member use-name
@@ -122,8 +111,7 @@ useNotationFont =
                    'woff)
                   (else 'otf))
              #}))
-      (oll:warn location
-        (format "No font \"~a\" installed in this LilyPond installation. Skipping." name))
+      (oll:warn "No font \"~a\" installed in this LilyPond installation. Skipping." name)
       (let*
        (
          ;; create an alist with options if they are given.
@@ -193,9 +181,9 @@ useNotationFont =
                         "-brace"))
                   #}))
            (begin
-            (oll:warn location
-              (format "No \"~a\" brace font available for backend '~a. Use Emmentaler as default."
-                brace (ly:get-option 'backend)))
+            (oll:warn 
+             "No \"~a\" brace font available for backend '~a. Use Emmentaler as default."
+                brace (ly:get-option 'backend))
             (set! brace "Emmentaler")
             (set! use-brace "emmentaler")))
 
@@ -205,21 +193,21 @@ useNotationFont =
             (or (string=? "none" style)
                 (file-exists? style-file)))
            (begin
-            (oll:warn location
-              (format "Requested stylesheet \"~a\" doesn't exist for font \"~a\". Skipping." style name))
+            (oll:warn 
+              "Requested stylesheet \"~a\" doesn't exist for font \"~a\". Skipping." style name)
             (set! style-file #f)))
 
        ;; store options, these are used from the included load-font file
-       #{ \setOption stylesheets.font.name #name #}
-       #{ \setOption stylesheets.font.use-name #use-name #}
-       #{ \setOption stylesheets.font.brace #brace #}
-       #{ \setOption stylesheets.font.use-brace #use-brace #}
-       #{ \setOption stylesheets.font.roman #roman #}
-       #{ \setOption stylesheets.font.use-roman #use-roman #}
-       #{ \setOption stylesheets.font.sans #sans #}
-       #{ \setOption stylesheets.font.use-sans #use-sans #}
-       #{ \setOption stylesheets.font.typewriter #typewriter #}
-       #{ \setOption stylesheets.font.use-typewriter #use-typewriter #}
+       #{ \setOption notation-fonts.font.name #name #}
+       #{ \setOption notation-fonts.font.use-name #use-name #}
+       #{ \setOption notation-fonts.font.brace #brace #}
+       #{ \setOption notation-fonts.font.use-brace #use-brace #}
+       #{ \setOption notation-fonts.font.roman #roman #}
+       #{ \setOption notation-fonts.font.use-roman #use-roman #}
+       #{ \setOption notation-fonts.font.sans #sans #}
+       #{ \setOption notation-fonts.font.use-sans #use-sans #}
+       #{ \setOption notation-fonts.font.typewriter #typewriter #}
+       #{ \setOption notation-fonts.font.use-typewriter #use-typewriter #}
 
        ;; load font through an included file.
        ;; this is necessary so that file can set its own
@@ -236,25 +224,21 @@ useNotationFont =
        ; related ly: functions but I didn't succeed to find a solution).
        (let ((arg
               (format "\\include \"~a\""
-                (string-append
-                 #{ \getOption global.root-path #}
-                 "/stylesheets/load-font"))))
-         (if (lilypond-less-than? "2.19.22")
-             (ly:parser-include-string parser arg)
-             (ly:parser-include-string arg)))
-       (oll:log location
+                (os-path-join-unix (append openlilylib-root '(notation-fonts load-font))))))
+         (ly:parser-include-string arg))
+       (oll:log (*location*)
          (format "Font \"~a\" loaded successfully" name))
 
        ;; try to load font extensions if requested
-       (if extensions (use-font-extensions parser location name))
+       (if extensions (use-font-extensions name))
 
        ;; include the determined style file for the font
        ;; if not "none".
        (if (and style-file (not (string=? "none" style)))
            (if (lilypond-greater-than? "2.19.21")
-           (ly:parser-include-string
-             (format "\\include \"~a\"" style-file))
-           (ly:parser-include-string parser
-             (format "\\include \"~a\"" style-file))))
-       (oll:log location (format "Associated \"~a\" stylesheet loaded successfully" style))
+               (ly:parser-include-string
+                (format "\\include \"~a\"" style-file))
+               (ly:parser-include-string parser
+                 (format "\\include \"~a\"" style-file))))
+       (oll:log (*location*) (format "Associated \"~a\" stylesheet loaded successfully" style))
        ))))

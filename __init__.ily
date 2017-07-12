@@ -34,16 +34,16 @@
 
 
 % internal options for use in the font loading mechanism
-\registerOption stylesheets.font.name Emmentaler
-\registerOption stylesheets.font.use-name Emmentaler
-\registerOption stylesheets.font.brace Emmentaler
-\registerOption stylesheets.font.use-brace Emmentaler
-\registerOption stylesheets.font.roman
-\registerOption stylesheets.font.use-roman
-\registerOption stylesheets.font.sans
-\registerOption stylesheets.font.use-sans
-\registerOption stylesheets.font.typewriter
-\registerOption stylesheets.font.use-typewriter
+\registerOption notation-fonts.font.name Emmentaler
+\registerOption notation-fonts.font.use-name Emmentaler
+\registerOption notation-fonts.font.brace Emmentaler
+\registerOption notation-fonts.font.use-brace Emmentaler
+\registerOption notation-fonts.font.roman
+\registerOption notation-fonts.font.use-roman
+\registerOption notation-fonts.font.sans
+\registerOption notation-fonts.font.use-sans
+\registerOption notation-fonts.font.typewriter
+\registerOption notation-fonts.font.use-typewriter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Determine installed notation fonts
@@ -80,13 +80,12 @@
 % and store them in the global options
 #(let*
   ((font-path (append (os-path-split (ly:get-option 'datadir)) '("fonts")))
-   (otf-path (join-unix-path (append font-path '("otf"))))
+   (otf-path (os-path-join-unix (append font-path '("otf"))))
    (otf-list (font-list otf-path "otf"))
-   (svg-path (join-unix-path (append font-path '("svg"))))
+   (svg-path (os-path-join-unix (append font-path '("svg"))))
    (svg-list (font-list svg-path "svg"))
    (woff-list (font-list svg-path "woff"))
    )
-  (display otf-path)
   #{ \registerOption global.installed-fonts.otf #(car otf-list) #}
   #{ \registerOption global.installed-fonts.otf-brace #(cdr otf-list) #}
   #{ \registerOption global.installed-fonts.svg #(car svg-list) #}

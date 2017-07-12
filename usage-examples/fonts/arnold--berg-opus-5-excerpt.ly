@@ -19,9 +19,9 @@
 % Global staff size should be set *before* selecting a font
 #(set-global-staff-size 19.5)
 
-\include "openlilylib"
+\include "oll-core/package.ily"
 
-\useLibrary "stylesheets"
+\loadPackage notation-fonts
 \useNotationFont \with {
   extensions = ##t
 }
@@ -32,10 +32,7 @@ Arnold
 
 % use ScholarLY to annotate manual modifications
 % to the engraving or the musical text.
-\useLibrary scholarly
-\useModule scholarly.annotate
-
-#(display "")
+\loadModule scholarly.annotate
 
 %\setOption scholarly.colorize ##f
 

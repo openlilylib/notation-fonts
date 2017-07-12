@@ -1,8 +1,8 @@
 \version "2.19.12"
 \language "english"
 
-\include "openlilylib"
-\useLibrary stylesheets
+\include "oll-core/package.ily"
+\loadPackage notation-fonts
 \useNotationFont Beethoven
 
 %TODO: This file includes an ugly mix of Henle stylesheet snippets and a few general

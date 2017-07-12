@@ -43,11 +43,11 @@
 \paper {
   #(define fonts
     (set-global-fonts
-     #:music #{ \getOption stylesheets.font.use-name #}
-     #:brace #{ \getOption stylesheets.font.use-brace #}
-     #:roman #{ \getOption stylesheets.font.use-roman #}
-     #:sans #{ \getOption stylesheets.font.use-sans #}
-     #:typewriter #{ \getOption stylesheets.font.use-typewriter #}
+     #:music #{ \getOption notation-fonts.font.use-name #}
+     #:brace #{ \getOption notation-fonts.font.use-brace #}
+     #:roman #{ \getOption notation-fonts.font.use-roman #}
+     #:sans #{ \getOption notation-fonts.font.use-sans #}
+     #:typewriter #{ \getOption notation-fonts.font.use-typewriter #}
      #:factor (/ staff-height pt 20)))
 }
 

@@ -2,8 +2,8 @@
 
 #(set-global-staff-size 18)
 
-\include "openlilylib"
-\useLibrary Stylesheets
+\include "oll-core/package.ily"
+\loadPackage notation-fonts
 \useNotationFont \with {
   extensions = ##t
 }
