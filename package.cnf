@@ -1,0 +1,28 @@
+#
+# openLilyLib/notation-fonts configuration
+#
+
+name: notation-fonts
+display-name: LilyPond Notation Fonts
+short-description: <
+  Choosing alternate notation fonts in GNU LilyPond
+  >
+description: <
+  Provides commands to select (installed) alternative notation fonts
+  for the GNU LilyPond score writer. Also provides default stylesheets
+  for a number of alternative fonts, optionally adding extension
+  commands for special glyphs that may be available in a given font.
+  NOTE: This package does *not* contain any fonts themselves, it
+  only adds *support* for the fonts to LilyPond
+  >
+oll-core: 0.5.0
+maintainers: [
+  Urs Liska <ul@openlilylib.org>
+  Abraham Lee <tisimst.lilypond@gmail.com>
+  Kieren MacMillan <kieren_macmillan@sympatico.ca>
+  ]
+version: 0.1.0
+license: GPL3
+website: https://github.com/openlilylib/notation-fonts
+repository: https://github.com/openlilylib/notation-fonts.git
+
