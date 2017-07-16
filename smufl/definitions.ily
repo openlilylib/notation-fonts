@@ -43,8 +43,8 @@
 
 #(define (smufl-duration-name log)
    (list-ref
-    '("Longa" "DoubleWhole" "Whole" "Half" "Quarter" "8th" "16th" "32nd" "64th" "128th" "256th" "512th" "1024th")
-    (+ log 2)))
+    '("Maxima" "Longa" "DoubleWhole" "Whole" "Half" "Quarter" "8th" "16th" "32nd" "64th" "128th" "256th" "512th" "1024th")
+    (+ log 3)))
 
 #(define smufl-alteration-glyph-name-alist
    '((0 . "accidentalNatural")
@@ -108,6 +108,7 @@
      ("scripts.dverylongfermata" . "fermataVeryLongBelow")
      ("scripts.thumb" . "stringsThumbPosition")
      ("scripts.sforzato" . ("articAccentAbove" . "articAccentBelow"))
+     ("scripts.espr" . "dynamicMessaDiVoce")
      ("scripts.staccato" . ("articStaccatoAbove" . "articStaccatoBelow"))
      ("scripts.ustaccatissimo" . "articStaccatissimoAbove")
      ("scripts.dstaccatissimo" . "articStaccatissimoBelow")
@@ -129,7 +130,7 @@
      ("scripts.dpedalheel" . "keyboardPedalHeel2")
      ("scripts.upedaltoe" . "keyboardPedalToe1")
      ("scripts.dpedaltoe" . "keyboardPedalToe2")
-     ;("scripts.flageolet" . "")
+     ("scripts.flageolet" . "stringsHarmonic")
      ("scripts.segno" . "segno")
      ("scripts.varsegno" . "segnoSerpent1")
      ("scripts.coda" . "coda")
@@ -143,7 +144,6 @@
      ("scripts.prall" . "ornamentMordent")
      ("scripts.mordent" . "ornamentMordentInverted")
      ("scripts.prallprall" . "ornamentTremblement")
-     ;("scripts.prallprall" . "")
      ("scripts.upprall" . "ornamentPrecompSlideTrillDAnglebert")
      ("scripts.upmordent" . "ornamentPrecompSlideTrillBach")
      ;("scripts.pralldown" . "")
@@ -151,8 +151,9 @@
      ;("scripts.downmordent" . "")
      ("scripts.prallup" . "ornamentPrecompTrillSuffixDandrieu")
      ("scripts.lineprall" . "ornamentPrecompAppoggTrill")
-     ("scripts.caesura.curved" . "caesura")
+     ("scripts.caesura.curved" . "caesuraCurved")
      ("scripts.caesura.straight" . "caesura")
+     ("scripts.tickmark" . "breathMarkTick")
      ("scripts.snappizzicato" . "pluckedSnapPizzicatoAbove")
      ("scripts.ictus" . "chantIctusAbove")
      ("scripts.uaccentus" . "chantAccentusAbove")
@@ -162,6 +163,20 @@
      ("scripts.circulus" . "chantAugmentum")
      ("scripts.usignumcongruentiae" . "mensuralSignumUp")
      ("scripts.dsignumcongruentiae" . "mensuralSignumDown")
+     ))
+
+#(define smufl-tuplet-map
+   '(("0" . "tuplet0")
+     ("1" . "tuplet1")
+     ("2" . "tuplet2")
+     ("3" . "tuplet3")
+     ("4" . "tuplet4")
+     ("5" . "tuplet5")
+     ("6" . "tuplet6")
+     ("7" . "tuplet7")
+     ("8" . "tuplet8")
+     ("9" . "tuplet9")
+     (":" . "tupletColon")
      ))
 
 #(define (smufl-has-glyph? glyphname)
@@ -356,6 +371,23 @@
              (set! stil (ly:stencil-combine-at-edge stil X RIGHT dot dot-width))
              (loop (- i 1))))))))
 
+#(define (smufl-tuplet-number grob)
+   (let* ((text (ly:grob-property grob 'text)))
+     (grob-interpret-markup
+      grob
+      (markup
+        #:center-align
+        #:vcenter
+        (if (pair? (assoc text smufl-tuplet-map))
+            (make-smuflglyph-markup (cdr (assoc text smufl-tuplet-map)))
+            (make-concat-markup
+             (map
+              (lambda (char)
+                (if (pair? (assoc (make-string 1 char) smufl-tuplet-map))
+                    (make-smuflglyph-markup (cdr (assoc (make-string 1 char) smufl-tuplet-map)))
+                    (markup (make-string 1 char))))
+              (string->list text))))))))
+
 ffffff = #(make-dynamic-script "ffffff")
 pppppp = #(make-dynamic-script "pppppp")
 niente = #(make-dynamic-script "n")
@@ -373,6 +405,7 @@ smuflOn = {
   \override Staff.Rest.stencil = #smufl-rest
   \override Staff.Script.stencil = #smufl-script
   \override Staff.DynamicText.stencil = #smufl-dynamic-text
+  \override Staff.TupletNumber.stencil = #smufl-tuplet-number
 }
 
 bravuraOn = {
@@ -396,6 +429,7 @@ smuflOff = {
   \revert Staff.Rest.stencil
   \revert Staff.Script.stencil
   \revert Staff.DynamicText.stencil
+  \revert Staff.TupletNumber.stencil
 }
 
 bravuraOff = {
