@@ -1,6 +1,7 @@
 """
 Converts the JSON glyph names for SMUFL into a LilyPond include.
 """
+import collections
 import json
 import textwrap
 
@@ -14,7 +15,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %}'''
 
-content = json.load(open(IN_FILENAME, 'r'))
+content = json.load(open(IN_FILENAME, 'r'), object_pairs_hook=collections.OrderedDict)
 
 outfile = open(OUT_FILENAME, 'w')
 outfile.write('\n\n'.join([textwrap.fill(par, 70) for par in PREAMBLE.splitlines()]) + '\n' * 3)
@@ -27,5 +28,5 @@ for name, value in content.items():
         continue
     outfile.write('  ("{}" . #x{})\n'.format(name, code))
 
-outfile.write('))')
+outfile.write('))\n')
 outfile.close()
