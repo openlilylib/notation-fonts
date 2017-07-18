@@ -58,12 +58,9 @@
    (let ((filename (make-style-file name "extensions")))
      (ly:message "Extension file: ~a" filename)
      (if (file-exists? filename)
-         (if (lilypond-greater-than? "2.19.21")
-             (ly:parser-include-string
-              (ly:gulp-file filename))
-             (ly:parser-include-string parser
-               (ly:gulp-file filename)))
-         (oll:warn 
+         (ly:parser-include-string
+          (ly:gulp-file filename))
+         (oll:warn
            "No extensions available for font \"~a\". Skipping." name)
          )))
 
@@ -181,7 +178,7 @@ useNotationFont =
                         "-brace"))
                   #}))
            (begin
-            (oll:warn 
+            (oll:warn
              "No \"~a\" brace font available for backend '~a. Use Emmentaler as default."
                 brace (ly:get-option 'backend))
             (set! brace "Emmentaler")
@@ -193,7 +190,7 @@ useNotationFont =
             (or (string=? "none" style)
                 (file-exists? style-file)))
            (begin
-            (oll:warn 
+            (oll:warn
               "Requested stylesheet \"~a\" doesn't exist for font \"~a\". Skipping." style name)
             (set! style-file #f)))
 
@@ -235,10 +232,7 @@ useNotationFont =
        ;; include the determined style file for the font
        ;; if not "none".
        (if (and style-file (not (string=? "none" style)))
-           (if (lilypond-greater-than? "2.19.21")
-               (ly:parser-include-string
-                (format "\\include \"~a\"" style-file))
-               (ly:parser-include-string parser
-                 (format "\\include \"~a\"" style-file))))
+           ((ly:parser-include-string
+             (format "\\include \"~a\"" style-file)))
        (oll:log (*location*) (format "Associated \"~a\" stylesheet loaded successfully" style))
        ))))
