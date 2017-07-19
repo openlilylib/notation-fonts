@@ -61,7 +61,7 @@
          (ly:parser-include-string
           (ly:gulp-file filename))
          (oll:warn
-           "No extensions available for font \"~a\". Skipping." name)
+          "No extensions available for font \"~a\". Skipping." name)
          )))
 
 % Use a notation font with or without options.
@@ -180,7 +180,7 @@ useNotationFont =
            (begin
             (oll:warn
              "No \"~a\" brace font available for backend '~a. Use Emmentaler as default."
-                brace (ly:get-option 'backend))
+             brace (ly:get-option 'backend))
             (set! brace "Emmentaler")
             (set! use-brace "emmentaler")))
 
@@ -191,7 +191,7 @@ useNotationFont =
                 (file-exists? style-file)))
            (begin
             (oll:warn
-              "Requested stylesheet \"~a\" doesn't exist for font \"~a\". Skipping." style name)
+             "Requested stylesheet \"~a\" doesn't exist for font \"~a\". Skipping." style name)
             (set! style-file #f)))
 
        ;; store options, these are used from the included load-font file
@@ -232,7 +232,7 @@ useNotationFont =
        ;; include the determined style file for the font
        ;; if not "none".
        (if (and style-file (not (string=? "none" style)))
-           ((ly:parser-include-string
-             (format "\\include \"~a\"" style-file)))
+           (ly:parser-include-string
+            (format "\\include \"~a\"" style-file)))
        (oll:log (*location*) (format "Associated \"~a\" stylesheet loaded successfully" style))
        ))))
