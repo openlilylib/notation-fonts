@@ -32,7 +32,7 @@
   Main functionality for font selection.
 %}
 
-\version "2.19.12"
+\version "2.19.22"
 
 \include "__init__.ily"
 
