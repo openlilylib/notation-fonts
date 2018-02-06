@@ -40,7 +40,7 @@
 #(define (make-style-file name style)
    "Construct file name for included style sheet.
     Factored out because needed several times."
-   (os-path-join-unix
+   (os-path-join
     (append openlilylib-root '(notation-fonts fonts)
       (list
        (string->symbol
@@ -221,7 +221,7 @@ useNotationFont =
        ; related ly: functions but I didn't succeed to find a solution).
        (let ((arg
               (format "\\include \"~a\""
-                (os-path-join-unix (append openlilylib-root '(notation-fonts load-font))))))
+                (os-path-join (append openlilylib-root '(notation-fonts load-font))))))
          (ly:parser-include-string arg))
        (oll:log (*location*)
          (format "Font \"~a\" loaded successfully" name))
