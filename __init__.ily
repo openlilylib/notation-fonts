@@ -82,7 +82,7 @@
   ((font-path (append (os-path-split (ly:get-option 'datadir)) '("fonts")))
    (otf-path (os-path-join (append font-path '("otf"))))
    (otf-list (font-list otf-path "otf"))
-   (svg-path (os-pain (append font-path '("svg"))))
+   (svg-path (os-path-join (append font-path '("svg"))))
    (svg-list (font-list svg-path "svg"))
    (woff-list (font-list svg-path "woff"))
    )
