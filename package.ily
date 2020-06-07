@@ -127,20 +127,23 @@ useNotationFont =
           (or (assoc-ref options 'brace)
               name))
          (use-brace (string-downcase brace))
-         ;; retrieve 'roman' name from options with "serif" default.
+         ;; retrieve 'roman' name from options with either "serif" or "LilyPond Serif" default.
          (roman
           (or (assoc-ref options 'roman)
-              "serif"))
+              (if (eq? (ly:get-option 'backend) 'svg)
+                                             "serif" "LilyPond Serif")))
          (use-roman (string-downcase roman))
-         ;; retrieve 'sans' name from options with "sans-serif" default.
+         ;; retrieve 'sans' name from options with either "sans-serif" or "LilyPond Sans Serif" default.
          (sans
           (or (assoc-ref options 'sans)
-              "sans-serif"))
+              (if (eq? (ly:get-option 'backend) 'svg)
+                                            "sans-serif" "LilyPond Sans Serif")))
          (use-sans (string-downcase sans))
-         ;; retrieve 'typewriter' name from options with "monospace" default.
+         ;; retrieve 'typewriter' name from options with either "monospace" or "LilyPond Monospace" default.
          (typewriter
           (or (assoc-ref options 'typewriter)
-              "monospace"))
+              (if (eq? (ly:get-option 'backend) 'svg)
+                                                  "monospace" "LilyPond Monospace")))
          (use-typewriter (string-downcase typewriter))
          ;; retrieve 'style' option with "default" default ...
          (style
